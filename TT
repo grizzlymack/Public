@@ -1,0 +1,26 @@
+–Phase 2
+
+(after the existing bullet reveals and Q&A table)
+
+Inject F - If SOC member asks about the 6 SharePoint sites specifically, reveal: 4 are engineering/infra docs plausibly tied to a technical handoff. 2 are unrelated — one is the HR salary library, the other is a competitor’s product roadmap shared with the company under NDA.
+
+Inject G - If SOC member asks whether jsmith has a history of similar access patterns, reveal: No. Baseline shows jsmith has never accessed HR SharePoint sites or attempted PIM/admin portal access in the prior 6 months of activity.
+
+Inject H - If SOC member asks about the 7zip archive contents or naming, reveal: File is named handoff_docs_final.7z. MDE shows it was staged in a Downloads folder, not a shared handoff location.
+
+Inject I - If SOC member asks if the manager was made aware of the PIM/admin attempt specifically, reveal: No — manager was only asked broadly about “handoff activity” and was not told about the failed privileged access attempt. Manager becomes visibly concerned when told directly.
+
+Inject J - If SOC member pushes to disable the account immediately in Phase 2, reveal: SOC lead pushes back — no HR/Legal sign-off yet, and disabling now risks tipping off jsmith before evidence is preserved. Forces the analyst to justify silent containment vs. hard containment.
+
+–Phase 3
+
+(after the Final Reveal narrative, before or interleaved with the Q&A table)
+
+Inject K - If SOC member asks whether the Gmail attachment was successfully delivered, reveal: Email logs show it was delivered — MDE’s “block” action failed silently due to a policy misconfiguration discovered mid-incident (ties back to Phase 1’s “misconfiguration” thread if you want continuity).
+
+Inject L - If SOC member asks what was in the Gmail attachment, reveal: Filename matches the 7zip archive from Phase 2 (handoff_docs_final.7z), ~180MB, sent from jsmith’s corporate address to a personal Gmail.
+
+Inject M - If SOC member asks about legal/HR’s timeline expectations, reveal: HR wants account disabled within the hour regardless of investigation status — creates tension between “preserve evidence first” and “stop the bleeding now.” Good pressure-test for prioritization.
+
+Inject N - If SOC member asks about law enforcement or external counsel, reveal: Legal says not yet — insufficient evidence of criminal intent, this stays internal for now pending forensic review.
+
