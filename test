@@ -1,0 +1,5 @@
+ wanted to flag a concern before we automate the hunt queries to run weekly.
+
+Hunts and analytic rules serve different purposes. Analytic rules are built and tuned to run unattended — validated thresholds, entity mapping, exclusion logic, known FP profile — so they produce a small number of high-confidence alerts someone can triage quickly. Hunt queries are intentionally broad and hypothesis-driven; they’re built to surface unknowns, not to run clean every week. If we just schedule the raw hunt queries, we’re not automating the work, we’re automating the noise — someone still has to manually sift a large, untuned result set every week, which adds a recurring chore rather than removing one. It also risks alert fatigue if people start ignoring it.
+
+Proposal: keep hunts ad hoc/hypothesis-driven as they are, but set up a hunt-to-detection pipeline — when a hunt surfaces a pattern that’s reliably high-fidelity, we tune it (thresholds, entity mapping, ATT&CK tagging), run it in audit mode for a bake-in period, then promote it to a proper scheduled analytic rule. That gets you the recurring automated coverage you want, without the backlog of noise.
