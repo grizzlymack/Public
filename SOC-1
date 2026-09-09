@@ -1,0 +1,14 @@
+Issue
+During a scheduled penetration test targeting the SOC team's detection and response capability, a junior SOC analyst exceeded the intended remediation scope after triaging a Microsoft Defender alert for suspected Active Directory Certificate Services (AD CS) enumeration. In addition to correctly blocking the pentest account and source IP tied to the enumeration activity, the analyst also disabled several legitimate service accounts that had been separately flagged for suspicious SPN (Service Principal Name) activity, mistakenly treating that flag as a second remediation instruction rather than a lead requiring manual review. This caused unintended service account lockouts.
+Threat Level
+Low (Exercise-Generated / Process Gap) — No genuine malicious activity occurred; this was a controlled, authorized penetration test. The threat here is not the exercise itself but the underlying escalation/verification gap it exposed, which could cause operational harm if repeated during a real incident.
+Summary of Event
+	•	Microsoft Defender generated an alert indicating possible enumeration of AD CS.
+	•	The on-shift junior analyst was assigned lead on triage and correctly identified the source IP and testing account responsible for the enumeration activity — the only elements requiring action.
+	•	Standard procedure for this finding: block the account/IP and submit a ticket documenting the action.
+	•	In parallel, Defender separately flagged suspicious SPN activity on several service accounts (indicative of potential Kerberoasting reconnaissance). This flag is intended to prompt investigation — confirming actual Kerberoasting indicators — before any blocking action, not automatic remediation.
+	•	The analyst interpreted the SPN flag as an instruction to block those accounts as well.
+	•	Before acting, the analyst attempted to escalate and ask for clarification from the SOC Team Lead.
+	•	Per direction from SOC management to observe the analyst's independent response and not interfere (this was itself part of what the exercise was testing), the Team Lead's guidance was limited to "block what needs to be disabled" — without scoping which items that covered.
+	•	The analyst proceeded to block both the pentest account/IP (correct) and the flagged service accounts (incorrect, unconfirmed), the latter having no verified indicators of compromise.
+	•	Disabling the service accounts caused an operational disruption.
