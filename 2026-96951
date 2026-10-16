@@ -1,4 +1,6 @@
+CVE-2026-96951 is a Windows Shell command injection that lets crafted files from email, IM, or links skip Mark of the Web. It's exploited in the wild. There's no public PoC, so this rule detects the behavior, not a signature.
 
+Logic: a risky file lands from a browser, mail client, or archive, then Explorer launches it within 15 minutes and no SmartScreen warning fires.
 
 	•	ATT&CK: T1553.005, T1204.002, T1566
 	•	FPs: medium, mostly legit installers from Downloads. Allowlist known FileOriginUrl domains.
