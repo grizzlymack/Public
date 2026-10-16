@@ -1,0 +1,33 @@
+
+
+	•	ATT&CK: T1553.005, T1204.002, T1566
+	•	FPs: medium, mostly legit installers from Downloads. Allowlist known FileOriginUrl domains.
+	•	SmartScreen gap: the SmartScreen anti-join only helps for .exe and .msi files. Script and .lnk prompts aren't logged.
+
+// CVE-2026-96951 | MotW bypass - internet file launched via Explorer, no SmartScreen
+let window = 15m;
+let riskyExt = dynamic(["exe","scr","msi","cpl","lnk","url","hta","js","jse","vbs","vbe","wsf","ps1","bat","cmd","chm","library-ms","searchconnector-ms"]);
+let lolbins = dynamic(["powershell.exe","pwsh.exe","cmd.exe","mshta.exe","wscript.exe","cscript.exe","rundll32.exe","regsvr32.exe","msiexec.exe"]);
+DeviceFileEvents
+| where TimeGenerated > ago(1h + window) and ActionType == "FileCreated"
+| extend Ext = tolower(tostring(split(FileName, ".")[-1]))
+| where Ext in (riskyExt)
+| where FolderPath has_any (@"\Downloads\", @"\Content.Outlook\", @"\INetCache\", @"\AppData\Local\Temp\")
+| where isnotempty(FileOriginUrl) or InitiatingProcessFileName in~ ("outlook.exe","olk.exe","ms-teams.exe","msedge.exe","chrome.exe","firefox.exe")
+| project DeliveredTime = TimeGenerated, DeviceId, DeviceName, FileName, SHA1, Ext, FileOriginUrl
+| join kind=inner (
+    DeviceProcessEvents
+    | where TimeGenerated > ago(1h) and InitiatingProcessFileName =~ "explorer.exe"
+    | project LaunchTime = TimeGenerated, DeviceId, AccountName, ProcName = FileName, ProcSHA1 = SHA1, ProcessCommandLine
+  ) on DeviceId
+| where LaunchTime between (DeliveredTime .. (DeliveredTime + window))
+| where ProcSHA1 == SHA1 or ProcessCommandLine has FileName
+     or (Ext in ("lnk","url") and ProcName in~ (lolbins))
+| join kind=leftanti (
+    DeviceEvents
+    | where TimeGenerated > ago(1h + window) and ActionType in ("SmartScreenAppWarning","SmartScreenUserOverride")
+    | project DeviceId, FileName
+  ) on DeviceId, FileName
+| project LaunchTime, DeviceName, AccountName, FileName, SHA1, FileOriginUrl, ProcName, ProcessCommandLine
+
+
